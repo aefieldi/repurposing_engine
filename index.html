@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Content Alchemy Studio — Day 4 Repurposing Engine v2.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --lavender:#C9B8F0;
+  --lavender-light:#EDE8FF;
+  --lavender-mid:#A594D9;
+  --lavender-deep:#7B5EA7;
+  --lavender-dark:#3D2A6B;
+  --pink:#F2C4D0;
+  --pink-light:#FDF0F4;
+  --pink-mid:#E8A0B4;
+  --gold:#C9A84C;
+  --gold-light:#F5E6B8;
+  --bg:#FBF8FF;
+  --surface:#FFFFFF;
+  --text:#2D1F4E;
+  --text-muted:#7B6A9B;
+  --text-hint:#B0A4CC;
+  --border:rgba(168,148,217,0.2);
+  --border-strong:rgba(168,148,217,0.4);
+  --radius:14px;
+  --radius-sm:9px;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HERO */
+.hero{
+  background:linear-gradient(160deg,#2D1F4E 0%,#4A2B7A 40%,#6B3D9A 70%,#4A2B7A 100%);
+  padding:2.5rem 1.5rem 2.25rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(242,196,208,0.15) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(201,184,240,0.2) 0%,transparent 45%),
+    radial-gradient(ellipse at 50% 90%,rgba(201,168,76,0.1) 0%,transparent 40%);
+}
+.hero::after{
+  content:'✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+  position:absolute;top:12px;left:0;right:0;
+  font-size:8px;letter-spacing:4px;color:rgba(255,255,255,0.2);
+  text-align:center;pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+  background:rgba(201,184,240,0.15);
+  border:1px solid rgba(201,184,240,0.3);
+  color:var(--lavender);margin-bottom:1rem;
+}
+.hero-eyebrow .cat{font-size:14px}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,3.5vw,2.1rem);
+  color:#fff;line-height:1.2;margin-bottom:.5rem;
+  text-shadow:0 2px 20px rgba(100,60,160,0.5);
+}
+.hero h1 em{font-style:italic;color:var(--lavender)}
+.hero-sub{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.75rem,1.5vw,0.9rem);
+  color:var(--gold-light);
+  letter-spacing:.06em;margin-bottom:.85rem;
+  text-transform:uppercase;
+}
+.hero p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.65;max-width:480px;margin:0 auto}
+
+/* CRYSTAL DIVIDER */
+.crystal-divider{
+  text-align:center;font-size:12px;
+  color:var(--lavender-mid);
+  letter-spacing:6px;padding:.75rem 0;
+  opacity:.6;
+}
+
+/* CONTAINER */
+.container{max-width:780px;margin:0 auto;padding:1.75rem 1.25rem 4rem}
+
+/* TABS */
+.tab-row{
+  display:flex;border-bottom:1px solid var(--border);
+  margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;
+  gap:0;
+}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{
+  font-family:'DM Sans',inherit;font-size:12.5px;font-weight:500;
+  padding:10px 16px;border:none;background:none;
+  color:var(--text-muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  white-space:nowrap;transition:color .15s;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--lavender-deep);border-bottom-color:var(--lavender-deep)}
+.tbadge{
+  display:inline-block;font-size:9px;padding:2px 6px;
+  border-radius:8px;background:var(--lavender-light);
+  color:var(--lavender-deep);margin-left:5px;font-weight:600;
+}
+
+/* CARDS */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.5rem;margin-bottom:1rem;
+  box-shadow:0 2px 20px rgba(100,60,180,0.05);
+}
+.info{
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-radius:var(--radius-sm);
+  padding:11px 14px;font-size:13px;
+  color:var(--lavender-dark);line-height:1.65;
+  margin-bottom:1.5rem;
+  border-left:3px solid var(--lavender-mid);
+}
+.info strong{font-weight:600}
+.upgrade-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:500;padding:5px 12px;
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border:1px solid var(--lavender-mid);color:var(--lavender-dark);
+  margin-bottom:1rem;
+}
+
+/* FORM */
+label{
+  display:block;font-size:11px;font-weight:600;
+  color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:7px;
+}
+input[type=text],select,textarea{
+  width:100%;font-family:inherit;font-size:14px;
+  color:var(--text);background:var(--bg);
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  padding:10px 13px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  line-height:1.5;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--lavender-mid);
+  box-shadow:0 0 0 3px rgba(165,148,217,0.15);
+}
+textarea{resize:vertical;min-height:110px}
+.section{margin-bottom:1.25rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+
+/* LENGTH GRID */
+.length-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem}
+.length-card{
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  padding:13px 10px;cursor:pointer;transition:all .2s;
+  background:var(--bg);text-align:center;user-select:none;
+}
+.length-card:hover{border-color:var(--lavender-mid);background:var(--lavender-light)}
+.length-card.on{
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-color:var(--lavender-mid);
+  box-shadow:0 2px 12px rgba(165,148,217,0.25);
+}
+.lc-label{font-size:10px;font-weight:600;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.length-card.on .lc-label{color:var(--lavender-deep)}
+.lc-time{font-size:14px;font-weight:600;color:var(--text)}
+.length-card.on .lc-time{color:var(--lavender-dark)}
+.lc-goal{font-size:10.5px;color:var(--text-hint);margin-top:3px}
+
+/* PLATFORM */
+.platform-row{display:flex;gap:8px;margin-bottom:0}
+.platform-btn{
+  flex:1;padding:9px;
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text-muted);
+  font-size:12.5px;font-weight:500;cursor:pointer;
+  text-align:center;transition:all .2s;font-family:inherit;
+}
+.platform-btn:hover{border-color:var(--lavender-mid)}
+.platform-btn.on{
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-color:var(--lavender-mid);color:var(--lavender-dark);
+  font-weight:600;
+}
+
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  cursor:pointer;font-size:12px;font-weight:500;
+  padding:6px 13px;border-radius:20px;
+  border:1px solid var(--border-strong);
+  background:var(--bg);color:var(--text-muted);
+  transition:all .15s;user-select:none;font-family:inherit;
+}
+.chip:hover{border-color:var(--lavender-mid);color:var(--lavender-dark)}
+.chip.on{
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-color:var(--lavender-mid);color:var(--lavender-dark);
+}
+
+/* BUTTON */
+.gen-btn{
+  width:100%;padding:13px;font-family:inherit;
+  font-size:14.5px;font-weight:500;
+  border-radius:var(--radius);
+  border:1px solid var(--lavender-mid);
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  color:var(--lavender-dark);cursor:pointer;
+  transition:all .2s;margin-top:.5rem;
+  letter-spacing:.01em;
+}
+.gen-btn:hover{
+  background:linear-gradient(135deg,var(--lavender-mid),var(--pink-mid));
+  color:#fff;border-color:var(--lavender-mid);
+  box-shadow:0 4px 20px rgba(165,148,217,0.35);
+}
+.gen-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* CHAR COUNT */
+.char-row{display:flex;justify-content:flex-end;margin-top:5px}
+.char-ct{font-size:11px;color:var(--text-hint)}
+.char-ok{color:#5a9e7a;font-weight:600}
+
+
+/* OFFER CARDS */
+.offer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:0}
+.offer-card{
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  padding:12px 14px;cursor:pointer;transition:all .2s;
+  background:var(--bg);user-select:none;
+}
+.offer-card:hover{border-color:var(--lavender-mid);background:var(--lavender-light)}
+.offer-card.on{
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-color:var(--lavender-mid);
+  box-shadow:0 2px 12px rgba(165,148,217,0.2);
+}
+.offer-icon{font-size:16px;color:var(--lavender-mid);margin-bottom:4px}
+.offer-card.on .offer-icon{color:var(--lavender-deep)}
+.offer-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.offer-card.on .offer-label{color:var(--lavender-dark)}
+.offer-sub{font-size:11px;color:var(--text-hint)}
+.offer-card.on .offer-sub{color:var(--lavender-mid)}
+
+/* OUTPUT */
+.out-wrap{
+  margin-top:1.5rem;
+  border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;display:none;
+  box-shadow:0 4px 30px rgba(100,60,180,0.08);
+}
+.out-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  border-bottom:1px solid var(--border-strong);
+}
+.out-lbl{font-size:12.5px;font-weight:600;color:var(--lavender-dark)}
+.copy-btn{
+  font-family:inherit;font-size:12px;font-weight:500;
+  padding:5px 13px;border-radius:var(--radius-sm);
+  border:1px solid var(--lavender-mid);background:#fff;
+  color:var(--lavender-dark);cursor:pointer;transition:all .15s;
+}
+.copy-btn:hover{background:var(--lavender-mid);color:#fff}
+.out-body{
+  padding:1.25rem;font-size:13.5px;line-height:1.85;
+  color:var(--text);white-space:pre-wrap;word-break:break-word;
+  background:#fff;min-height:60px;
+}
+
+/* LOADING */
+.loading{
+  display:flex;align-items:center;gap:12px;
+  color:var(--text-muted);font-size:13px;padding:1.75rem;
+}
+.dots{display:flex;gap:5px}
+.dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--lavender-mid);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+.dot:nth-child(2){animation-delay:.2s;background:var(--pink-mid)}
+.dot:nth-child(3){animation-delay:.4s;background:var(--gold)}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(.75)}50%{opacity:1;transform:scale(1)}}
+
+/* ERROR */
+.err-box{
+  background:#fff5f5;border:1px solid #ffcdd2;
+  border-radius:var(--radius-sm);padding:12px 14px;
+  font-size:13px;color:#8b0000;line-height:1.6;
+}
+
+/* HOW IT WORKS */
+.step-row{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:14px 0;border-bottom:1px solid var(--border);
+}
+.step-row:last-child{border-bottom:none}
+.step-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:linear-gradient(135deg,var(--lavender-light),var(--pink-light));
+  color:var(--lavender-dark);font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--lavender-mid);
+}
+.step-txt{font-size:13.5px;color:var(--text-muted);line-height:1.65}
+.step-txt strong{color:var(--text);font-weight:600}
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:2rem 1rem;
+  font-size:12px;color:var(--text-hint);
+  border-top:1px solid var(--border);margin-top:2rem;
+}
+footer .gold{color:var(--gold);font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="cat">🐱</span>
+      Visibility by Design Challenge — Day 4
+    </div>
+    <div class="hero-sub">Content Alchemy Studio</div>
+    <h1>Instagram & TikTok<br/><em>Repurposing Engine</em></h1>
+    <p>One YouTube video → 7 production-ready short-form briefs with b-roll direction, text overlays, live trending hashtags, and your full DM conversion system.</p>
+  </div>
+</div>
+
+<div class="crystal-divider">◇ ◈ ◇ ◈ ◇ ◈ ◇</div>
+
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('clips')">Find Clips <span class="tbadge">v2.3</span></button>
+    <button class="tab" onclick="switchTab('dm')">DM Sequence</button>
+    <button class="tab" onclick="switchTab('caption')">Caption Writer</button>
+    <button class="tab" onclick="switchTab('blog')">Blog Post</button>
+    <button class="tab" onclick="switchTab('email')">Email Blast</button>
+    <button class="tab" onclick="switchTab('howto')">How It Works</button>
+  </div>
+
+  <!-- FIND CLIPS -->
+  <div id="tab-clips">
+    <div class="upgrade-badge">✦ v2.3 — 7 briefs · live hashtags · real offer CTAs</div>
+    <div class="info"><strong>What's new:</strong> Down to 7 high-quality production briefs (3 Discovery · 3 Authority · 1 Conversion) for sharper output. Live web search now pulls <em>actually trending</em> hashtags in your niche before generating. These are re-records — not clips from the YouTube video.</div>
+
+    <div class="card">
+      <div class="section">
+        <label>Your YouTube Transcript</label>
+        <textarea id="transcript" rows="10" placeholder="Paste your full transcript here.&#10;&#10;YouTube → three dots under video → Show transcript → copy everything. Raw auto-captions are totally fine — no cleanup needed." oninput="updateChar()"></textarea>
+        <div class="char-row"><span class="char-ct" id="char-ct">0 characters — paste your transcript above</span></div>
+      </div>
+
+      <div class="section row2">
+        <div>
+          <label>Your Niche / Audience</label>
+          <input type="text" id="niche" placeholder="e.g. Spiritual entrepreneurs..."/>
+        </div>
+        <div>
+          <label>Platform</label>
+          <div class="platform-row">
+            <button class="platform-btn on" onclick="setPlatform(this,'Instagram Reels')">Instagram</button>
+            <button class="platform-btn" onclick="setPlatform(this,'TikTok')">TikTok</button>
+            <button class="platform-btn" onclick="setPlatform(this,'Both')">Both</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Clip Length Mix</label>
+        <div class="length-grid">
+          <div class="length-card on" onclick="toggleLength(this)" data-val="3 clips at 15-30 seconds (Discovery/reach goal — shown to new audiences first)">
+            <div class="lc-label">Discovery</div>
+            <div class="lc-time">15–30 sec</div>
+            <div class="lc-goal">Reach new audiences</div>
+          </div>
+          <div class="length-card on" onclick="toggleLength(this)" data-val="3 clips at 30-60 seconds (Authority/teaching goal — builds trust and credibility)">
+            <div class="lc-label">Authority</div>
+            <div class="lc-time">30–60 sec</div>
+            <div class="lc-goal">Build trust + credibility</div>
+          </div>
+          <div class="length-card on" onclick="toggleLength(this)" data-val="1 clip at 60-90 seconds (Conversion/story goal — drives DMs and offer interest)">
+            <div class="lc-label">Conversion</div>
+            <div class="lc-time">60–90 sec</div>
+            <div class="lc-goal">Drive DMs + offers</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>What to send in DMs</label>
+        <div class="offer-grid" id="offer-grid">
+          <div class="offer-card on" onclick="selectOffer(this)" data-val="video">
+            <div class="offer-icon">▶</div>
+            <div class="offer-label">Full YouTube video</div>
+            <div class="offer-sub">Comment for the full training</div>
+          </div>
+          <div class="offer-card" onclick="selectOffer(this)" data-val="freebie">
+            <div class="offer-icon">✦</div>
+            <div class="offer-label">Free resource</div>
+            <div class="offer-sub">Comment for the freebie</div>
+          </div>
+          <div class="offer-card" onclick="selectOffer(this)" data-val="skool">
+            <div class="offer-icon">◈</div>
+            <div class="offer-label">Skool community</div>
+            <div class="offer-sub">Comment to get access</div>
+          </div>
+          <div class="offer-card" onclick="selectOffer(this)" data-val="both">
+            <div class="offer-icon">✧</div>
+            <div class="offer-label">Video + Community</div>
+            <div class="offer-sub">Comment for both</div>
+          </div>
+        </div>
+        <div id="freebie-field" style="display:none;margin-top:12px">
+          <label style="margin-top:8px">Describe your freebie in one line</label>
+          <input type="text" id="freebie-desc" placeholder="e.g. a free Human Design visibility guide, a Skool quick-start checklist..."/>
+          <div style="font-size:11px;color:var(--text-hint);margin-top:4px">The more specific, the better it converts — the AI will use your exact words in the CTA.</div>
+        </div>
+        <div id="skool-field" style="display:none;margin-top:12px">
+          <label style="margin-top:8px">Your community name</label>
+          <input type="text" id="skool-name" placeholder="e.g. Spiritual Business Skool, The Visibility Lab..."/>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>Clip Priority</label>
+        <div class="chip-group" id="priorities">
+          <span class="chip on" onclick="toggleChip(this)">Highest share-to-friend potential</span>
+          <span class="chip on" onclick="toggleChip(this)">Hot take / challenges conventional wisdom</span>
+          <span class="chip on" onclick="toggleChip(this)">Specific numbers or frameworks</span>
+          <span class="chip" onclick="toggleChip(this)">One-liner scroll-stopper</span>
+          <span class="chip" onclick="toggleChip(this)">Stands alone without context</span>
+          <span class="chip" onclick="toggleChip(this)">Vulnerability / confession moment</span>
+        </div>
+      </div>
+
+      <button class="gen-btn" id="clips-btn" onclick="findClips()">✦ Generate production briefs ↗</button>
+    </div>
+
+    <div class="out-wrap" id="clips-out">
+      <div class="out-head">
+        <span class="out-lbl">✦ 7 production briefs + trending hashtags + content calendar</span>
+        <button class="copy-btn" onclick="copyEl('clips-body')">Copy all</button>
+      </div>
+      <div class="out-body" id="clips-body"></div>
+    </div>
+  </div>
+
+  <!-- DM SEQUENCE -->
+  <div id="tab-dm" style="display:none">
+    <div class="info">Write your 3-part DM sequence — the instant reply when someone comments, a 24hr follow-up, and a soft close. Have this ready before your first clip goes live.</div>
+    <div class="card">
+      <div class="section row2">
+        <div><label>Comment keyword</label><input type="text" id="dm-kw" placeholder="e.g. VISIBILITY, DESIGN, FREE..."/></div>
+        <div><label>What you're sending</label>
+          <select id="dm-type">
+            <option>Full YouTube video link</option>
+            <option>Free resource / freebie</option>
+            <option>Skool community link</option>
+            <option>Video + Skool link</option>
+          </select>
+        </div>
+      </div>
+      <div class="section row2">
+        <div><label>Community or offer name</label><input type="text" id="dm-community" placeholder="e.g. my Skool community..."/></div>
+        <div><label>DM tone</label>
+          <select id="dm-tone">
+            <option>Warm and personal</option>
+            <option>Hype and celebratory</option>
+            <option>Soft and nurturing</option>
+            <option>Direct and strategic</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="dm-btn" onclick="generateDM()">✦ Write my DM sequence ↗</button>
+    </div>
+    <div class="out-wrap" id="dm-out">
+      <div class="out-head"><span class="out-lbl">3-part DM sequence</span><button class="copy-btn" onclick="copyEl('dm-body')">Copy</button></div>
+      <div class="out-body" id="dm-body"></div>
+    </div>
+  </div>
+
+  <!-- CAPTION WRITER -->
+  <div id="tab-caption" style="display:none">
+    <div class="info">Paste one clip script from your production brief and get a full caption with the comment CTA and real hashtags.</div>
+    <div class="card">
+      <div class="section">
+        <label>Clip script or key talking points</label>
+        <textarea id="cap-clip" rows="5" placeholder="Paste the script from one of your 7 production briefs..."></textarea>
+      </div>
+      <div class="section row2">
+        <div><label>Comment keyword</label><input type="text" id="cap-kw" placeholder="e.g. VISIBILITY"/></div>
+        <div><label>Platform</label>
+          <select id="cap-platform">
+            <option>Instagram Reels</option>
+            <option>TikTok</option>
+            <option>Both</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="cap-btn" onclick="generateCaption()">✦ Write my caption ↗</button>
+    </div>
+    <div class="out-wrap" id="cap-out">
+      <div class="out-head"><span class="out-lbl">Caption + hashtags</span><button class="copy-btn" onclick="copyEl('cap-body')">Copy</button></div>
+      <div class="out-body" id="cap-body"></div>
+    </div>
+  </div>
+
+  <!-- BLOG POST -->
+  <div id="tab-blog" style="display:none">
+    <div class="info">Turn your transcript into a full SEO-optimised blog post that drives Google traffic back to your YouTube or Skool community.</div>
+    <div class="card">
+      <div class="section">
+        <label>Transcript (or leave blank to reuse Find Clips tab)</label>
+        <textarea id="blog-tx" rows="6" placeholder="Paste transcript here, or leave blank..."></textarea>
+      </div>
+      <div class="section row2">
+        <div><label>Focus keyword</label><input type="text" id="blog-kw" placeholder="e.g. spiritual entrepreneur visibility..."/></div>
+        <div><label>Internal link destination</label>
+          <select id="blog-link">
+            <option>Skool community</option>
+            <option>YouTube channel</option>
+            <option>Free resource</option>
+            <option>All three</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="blog-btn" onclick="generateBlog()">✦ Write my blog post ↗</button>
+    </div>
+    <div class="out-wrap" id="blog-out">
+      <div class="out-head"><span class="out-lbl">SEO blog post</span><button class="copy-btn" onclick="copyEl('blog-body')">Copy</button></div>
+      <div class="out-body" id="blog-body"></div>
+    </div>
+  </div>
+
+  <!-- EMAIL BLAST -->
+  <div id="tab-email" style="display:none">
+    <div class="info">One broadcast email from your YouTube video — drives your list to watch, grab the freebie, or join your community. Written in your voice.</div>
+    <div class="card">
+      <div class="section">
+        <label>Transcript (or leave blank to reuse Find Clips tab)</label>
+        <textarea id="email-tx" rows="5" placeholder="Paste transcript here, or leave blank..."></textarea>
+      </div>
+      <div class="section row2">
+        <div><label>How you greet your list</label><input type="text" id="email-greet" placeholder="e.g. Hey love, Hi beautiful..."/></div>
+        <div><label>Primary CTA</label>
+          <select id="email-cta">
+            <option>Watch the full YouTube video</option>
+            <option>Grab the free resource</option>
+            <option>Join my community</option>
+            <option>Watch video + join community</option>
+          </select>
+        </div>
+      </div>
+      <div class="section">
+        <label>Brand voice</label>
+        <div class="chip-group" id="email-voice">
+          <span class="chip on" onclick="toggleCS(this,'email-voice')">Soft life, savage execution</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Warm spiritual teacher</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Hype coach energy</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Grounded and honest</span>
+        </div>
+      </div>
+      <button class="gen-btn" id="email-btn" onclick="generateEmail()">✦ Write my email blast ↗</button>
+    </div>
+    <div class="out-wrap" id="email-out">
+      <div class="out-head"><span class="out-lbl">Broadcast email</span><button class="copy-btn" onclick="copyEl('email-body')">Copy</button></div>
+      <div class="out-body" id="email-body"></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div id="tab-howto" style="display:none">
+    <div class="info"><strong>The Content Alchemy system:</strong> One YouTube video → 7 production-ready short-form briefs → a full week of content → a DM pipeline → new community members. Repeat weekly.</div>
+    <div class="card">
+      <div class="step-row"><div class="step-num">1</div><div class="step-txt"><strong>Record your YouTube long-form video</strong> — this is your content hub. Every other piece of content repurposes from here.</div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-txt"><strong>Get your transcript</strong> — YouTube video → three dots below → "Show transcript" → copy all. Raw auto-captions work perfectly, no cleanup needed.</div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-txt"><strong>Run the Find Clips tab</strong> — the tool searches for trending hashtags in your niche first, then generates 7 full production briefs: spoken hook, text-on-screen specs, b-roll shot list, pacing notes, comment keyword with rationale, caption, and real hashtags.</div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-txt"><strong>Re-record each clip as a standalone video</strong> — NOT cuts from the YouTube video. Each brief tells you exactly what to say, what to show, and what b-roll to film. Re-records perform significantly better on short-form platforms because they are built for that energy and pacing.</div></div>
+      <div class="step-row"><div class="step-num">5</div><div class="step-txt"><strong>Post with the 2-step CTA</strong> — end every clip with "Comment [KEYWORD] and I'll send you the full training." On TikTok say "DM me [KEYWORD]" — comment-to-DM automation is Instagram only via ManyChat.</div></div>
+      <div class="step-row"><div class="step-num">6</div><div class="step-txt"><strong>DM everyone who engages</strong> — use the DM Sequence tab to write your 3-part message flow in advance so you are ready to respond instantly.</div></div>
+      <div class="step-row"><div class="step-num">7</div><div class="step-txt"><strong>Stack the content ecosystem</strong> — Blog Post tab for Google traffic, Email Blast tab to notify your list. One video, seven content touchpoints.</div></div>
+      <div class="step-row"><div class="step-num">✦</div><div class="step-txt"><strong>Want to auto-distribute all 7 clips across every platform at once?</strong> — <a href="https://repurpose.io?fpr=507507" target="_blank" style="color:var(--lavender-deep);font-weight:600;text-decoration:underline;text-decoration-color:var(--lavender-mid)">Repurpose.io</a> connects your YouTube, Instagram, TikTok, Facebook, LinkedIn and more so one upload goes everywhere automatically. It is the tool that makes this whole system truly hands-off.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="card">
+      <label>Why re-record instead of clip?</label>
+      <div class="step-txt" style="margin-top:8px;font-size:13.5px">In 2026 the algorithm shows your content to existing followers first — if it performs there, it goes wider. Re-recorded clips are built for short-form pacing, energy, and context. Clips cut from a YouTube video carry YouTube energy and consistently underperform on Reels and TikTok.</div>
+      <div class="divider"></div>
+      <label>How to get your transcript</label>
+      <div class="step-txt" style="margin-top:8px;font-size:13.5px">
+        <strong>YouTube directly:</strong> Open your video → three dots → "Show transcript" → copy all<br/><br/>
+        <strong>YouTube Studio:</strong> Studio → Subtitles → your video → download<br/><br/>
+        <strong>Descript or Otter.ai:</strong> Paste your video URL or upload the file → auto-generated
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="gold">✦</span> Content Alchemy Studio &nbsp;·&nbsp; Visibility by Design Challenge — Day 4 &nbsp;·&nbsp; v2.3 <span class="gold">✦</span>
+</footer>
+
+<script>
+let selectedPlatform='Instagram Reels';
+let selectedOffer='video';
+
+function selectOffer(el){
+  document.querySelectorAll('.offer-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  selectedOffer=el.getAttribute('data-val');
+  document.getElementById('freebie-field').style.display=selectedOffer==='freebie'?'block':'none';
+  document.getElementById('skool-field').style.display=(selectedOffer==='skool'||selectedOffer==='both')?'block':'none';
+}
+
+function getOffer(){
+  const freebie=gv('freebie-desc');
+  const skool=gv('skool-name')||'their community';
+  if(selectedOffer==='video') return `the full YouTube video link — write the CTA as: Comment [KEYWORD] and I will send you the full video`;
+  if(selectedOffer==='freebie'){
+    if(freebie) return `a free resource: "${freebie}" — write the CTA using this exact freebie description, e.g. Comment [KEYWORD] and I will send you ${freebie}`;
+    return `a free resource — write the CTA as: Comment [KEYWORD] and I will send you the free resource`;
+  }
+  if(selectedOffer==='skool') return `a link to join ${skool} — write the CTA as: Comment [KEYWORD] and I will send you the link to join ${skool}`;
+  if(selectedOffer==='both') return `the full YouTube video plus access to ${skool} — write the CTA as: Comment [KEYWORD] and I will send you the full training plus the link to join ${skool}`;
+  return `the full YouTube video link`;
+}
+
+
+
+function switchTab(t){
+  ['clips','dm','caption','blog','email','howto'].forEach((id,i)=>{
+    document.getElementById('tab-'+id).style.display=id===t?'block':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active',id===t);
+  });
+}
+function setPlatform(el,val){
+  document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');selectedPlatform=val;
+}
+function toggleLength(el){el.classList.toggle('on');}
+function toggleChip(el){el.classList.toggle('on');}
+function toggleCS(el,gid){
+  document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+function getChips(gid){return[...document.querySelectorAll('#'+gid+' .chip.on')].map(c=>c.textContent.trim()).join(', ');}
+function getLengths(){return[...document.querySelectorAll('.length-card.on')].map(c=>c.getAttribute('data-val')).join(' + ');}
+function gv(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+function getTx(fbId){return gv('transcript')||gv(fbId)||'';}
+
+function updateChar(){
+  const len=document.getElementById('transcript').value.length;
+  const el=document.getElementById('char-ct');
+  if(len===0){el.textContent='0 characters — paste your transcript above';el.className='char-ct';}
+  else if(len<300){el.textContent=len.toLocaleString()+' characters — longer transcripts give richer results';el.className='char-ct';}
+  else{el.textContent=len.toLocaleString()+' characters ✓ ready to analyze';el.className='char-ct char-ok';}
+}
+
+function showLoad(bodyId,msg){
+  document.getElementById(bodyId).innerHTML=`<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>${msg||'Working on your content...'}</span></div>`;
+}
+function showErr(bodyId,msg){
+  document.getElementById(bodyId).innerHTML=`<div class="err-box">${msg}</div>`;
+}
+
+async function callAPI(system,userMsg,bodyId,outId,btnId,loadMsg,useWebSearch){
+  document.getElementById(outId).style.display='block';
+  document.getElementById(btnId).disabled=true;
+  showLoad(bodyId,loadMsg||'Generating...');
+  try{
+    const body={
+      model:'claude-sonnet-4-20250514',
+      max_tokens:4000,
+      system,
+      messages:[{role:'user',content:userMsg}]
+    };
+    if(useWebSearch){
+      body.tools=[{type:'web_search_20250305',name:'web_search'}];
+    }
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){
+      const e=await res.json().catch(()=>({}));
+      if(res.status===401)showErr(bodyId,'Authentication error — open this file inside Claude.ai while logged in.');
+      else if(res.status===429)showErr(bodyId,'Rate limit hit. Wait 30 seconds and try again.');
+      else showErr(bodyId,`Error (${res.status}): ${e?.error?.message||'Unknown error'}. Try again.`);
+      return;
+    }
+    const data=await res.json();
+    const text=data.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'No response — try again.';
+    document.getElementById(bodyId).textContent=text;
+  }catch(e){
+    showErr(bodyId,`Network error: ${e.message}. Check your connection and try again.`);
+  }finally{
+    document.getElementById(btnId).disabled=false;
+  }
+}
+
+function copyEl(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
+    document.querySelectorAll('.copy-btn').forEach(btn=>{
+      if(btn.getAttribute('onclick')?.includes(id)){
+        const orig=btn.textContent;btn.textContent='Copied ✓';
+        setTimeout(()=>btn.textContent=orig,2000);
+      }
+    });
+  });
+}
+
+async function findClips(){
+  const tx=gv('transcript');
+  if(!tx||tx.length<200){alert('Please paste your transcript first — needs at least a few hundred characters.');return;}
+  const niche=gv('niche')||'spiritual entrepreneurs and coaches';
+  const offer=getOffer();
+  const pri=getChips('priorities')||'share-to-friend potential, hot takes, specific frameworks';
+  const lengths=getLengths()||'3 clips at 15-30 seconds (Discovery) + 3 clips at 30-60 seconds (Authority) + 1 clip at 60-90 seconds (Conversion)';
+  const platform=selectedPlatform;
+
+  const platformNote=platform==='TikTok'
+    ?'Platform: TikTok. IMPORTANT — comment-to-DM automation is NOT available on TikTok in most markets. CTA must be "DM me [KEYWORD]" not "Comment [KEYWORD]". TikTok DMs have a 48-hour window and 10-message limit — prioritize capturing email early in the flow.'
+    :platform==='Instagram Reels'
+    ?'Platform: Instagram Reels. Comment-to-DM automation via ManyChat is fully supported — use "Comment [KEYWORD]" as the CTA throughout.'
+    :'Platform: Both Instagram and TikTok. IMPORTANT distinction — Instagram supports comment-to-DM automation ("Comment [KEYWORD]"). TikTok does NOT in most markets — use "DM me [KEYWORD]" for TikTok. Note this difference in each clip brief.';
+
+  const sys=`You are a world-class short-form content strategist for online coaches, spiritual entrepreneurs, and course creators in 2026. You understand the current algorithm reality: DM shares are the #1 distribution signal on both platforms; content is shown to existing followers first before going wider; and re-recorded standalone clips dramatically outperform clips cut from YouTube videos on short-form platforms.
+
+STEP 1 — HASHTAG RESEARCH:
+Before writing any clip briefs, use your web_search tool to search for currently trending and high-performing hashtags for this audience: "${niche}" on Instagram Reels and TikTok in 2026. Search queries like "trending hashtags ${niche} Instagram TikTok 2026" and "best hashtags for [specific topic from transcript] Instagram". Compile a master list of 20-25 real, working hashtags — mix of high-volume community tags, mid-size niche-specific tags, and searchable intent tags. You will draw from this list when writing each clip brief.
+
+STEP 2 — WRITE 7 PRODUCTION BRIEFS:
+Analyze the transcript and produce exactly 7 FULL PRODUCTION BRIEFS. These are re-records, not cuts from the YouTube video.
+
+${platformNote}
+
+Length mix: ${lengths}
+
+For EACH clip use this EXACT format:
+
+---
+CLIP [#] — [Punchy title] | [Length] | [Goal: Discovery / Authority / Conversion]
+
+VERBAL HOOK (spoken on camera — first 1.7 seconds):
+[One line. Polarizing, contrarian, or pattern interrupt. Creates immediate curiosity WITHOUT giving away the answer. This is literally the first thing they say on camera.]
+
+TEXT ON SCREEN (frame 1 graphic):
+Text: [3-7 words max]
+Placement: [upper third / center / lower third]
+Style: [specific style direction e.g. bold white with key word in yellow — Hormozi style / large centered italic / etc.]
+
+BODY SCRIPT:
+[Re-recordable script refined from the transcript for short-form delivery. Short punchy sentences. Natural spoken rhythm. Mark b-roll cut points as [B-ROLL: description]. Mark text overlay moments as [TEXT OVERLAY: what to display]. Do NOT give away the full answer from the YouTube video — leave a gap that makes them want the full training.]
+
+B-ROLL SHOT LIST:
+1. [Shot type + description — filmable alone with a phone]
+2. [Shot]
+3. [Shot]
+4. [Shot]
+(3-5 shots, no crew needed)
+
+PACING NOTE:
+[1-2 sentences on energy, delivery speed, and any key moment to punch or slow down for emphasis]
+
+COMMENT KEYWORD: [ONE WORD in caps]
+Why this converts: [1 sentence — why this word beats a generic alternative]
+
+DM OFFER: [Write the exact CTA line for this clip, sending them: ${offer}. Make it specific to this clip's content, not generic.]
+
+CAPTION:
+[2-3 sentences opening the loop the video closes, ending with the comment CTA. Ready to paste into the caption field.]
+
+HASHTAGS:
+[Pull 8-10 relevant hashtags from your researched master list that best match this specific clip's topic. Include # symbols. Mix sizes.]
+---
+
+STEP 3 — WEEKLY CONTENT CALENDAR:
+After all 7 clips add:
+
+WEEKLY CONTENT CALENDAR
+Monday: Clip # — [title] — [length] — [reason: start with Discovery for max reach]
+Tuesday: Clip # — [title] — [length] — [reason]
+Wednesday: Clip # — [title] — [length] — [reason]
+Thursday: Clip # — [title] — [length] — [reason]
+Friday: Clip # — [title] — [length] — [reason: close the week with Conversion clip]
+Weekend: Clip # — [evergreen pick — why it works on weekends]
+Strategic logic: [2-3 sentences on how this sequence builds from reach → trust → conversion across the week]
+
+Clip selection priority: ${pri}`;
+
+  callAPI(
+    sys,
+    `Audience niche: ${niche}\nDM offer: ${offer}\nPlatform: ${platform}\n\nTRANSCRIPT:\n${tx}`,
+    'clips-body','clips-out','clips-btn',
+    '✦ Researching trending hashtags, then building your 7 production briefs...',
+    true
+  );
+}
+
+async function generateDM(){
+  const kw=gv('dm-kw')||'[KEYWORD]';
+  const type=gv('dm-type');
+  const community=gv('dm-community')||'my community';
+  const tone=gv('dm-tone');
+  const sys=`You write short, warm, converting DM sequences for online coaches and spiritual entrepreneurs. Write exactly 3 messages clearly labeled MESSAGE 1, MESSAGE 2, MESSAGE 3:
+MESSAGE 1: Sent instantly when they comment or DM — delivers exactly what was promised, warm and genuine, one soft invitation to go deeper. 3-4 sentences max.
+MESSAGE 2: Follow-up 24hrs later if no reply — friendly check-in, zero pressure, makes it easy to respond. 2-3 sentences.
+MESSAGE 3: Soft close 48hrs later — light genuine urgency, no manipulation or false scarcity. 3 sentences max.
+Tone: ${tone}. Conversational, personal, sounds like a real human. No excessive emojis. No corporate language.`;
+  callAPI(sys,`Comment keyword: ${kw}\nSending them: ${type}\nCommunity or offer name: ${community}`,'dm-body','dm-out','dm-btn','Writing your DM sequence...',false);
+}
+
+async function generateCaption(){
+  const clip=gv('cap-clip');
+  if(!clip){alert('Paste your clip content first.');return;}
+  const kw=gv('cap-kw')||'COMMENT';
+  const platform=gv('cap-platform');
+  const sys=`You write high-converting ${platform} captions for spiritual entrepreneurs and coaches using a comment-to-DM strategy. Also use web_search to find 8-10 currently trending hashtags relevant to the clip content before writing. Structure: powerful opening hook line (1 sentence, no question), 3-4 short body paragraphs (1-2 lines each, conversational and punchy), comment CTA line (specific and benefit-driven), then "HASHTAGS:" followed by 8-10 real hashtags with # symbols researched for this content — mix of high-volume, mid-size niche, and searchable intent tags. No em-dashes. Short paragraphs. Spoken not written.`;
+  callAPI(sys,`Platform: ${platform}\nComment keyword: ${kw}\nClip content:\n${clip}`,'cap-body','cap-out','cap-btn','Researching hashtags and writing your caption...',true);
+}
+
+async function generateBlog(){
+  const tx=getTx('blog-tx');
+  if(!tx||tx.length<200){alert('Paste your transcript in this tab or the Find Clips tab first.');return;}
+  const kw=gv('blog-kw')||'spiritual entrepreneur visibility';
+  const link=gv('blog-link');
+  const sys=`You write SEO-optimised blog posts for spiritual entrepreneurs and online coaches. Output in order: H1 title (include focus keyword naturally), meta description (155 chars max), intro paragraph with a hook and clear promise, 4-5 H2 sections with substantive body paragraphs drawn from the transcript, conclusion CTA paragraph linking to ${link}. Voice: warm, direct, slightly edgy — real talk, no fluff. Include focus keyword naturally 3-5 times total. End with one clear CTA.`;
+  callAPI(sys,`Focus keyword: ${kw}\nInternal link destination: ${link}\n\nTRANSCRIPT:\n${tx}`,'blog-body','blog-out','blog-btn','Writing your blog post...',false);
+}
+
+async function generateEmail(){
+  const tx=getTx('email-tx');
+  if(!tx||tx.length<200){alert('Paste your transcript in this tab or the Find Clips tab first.');return;}
+  const greet=gv('email-greet')||'Hey love';
+  const cta=gv('email-cta');
+  const voice=getChips('email-voice')||'soft life, savage execution';
+  const sys=`You write broadcast emails for online coaches and spiritual entrepreneurs. Output: subject line (curiosity-driven, under 50 chars, no clickbait), preview text (under 40 chars), then the full email body. Voice: ${voice}. Structure: open with a personal hook or story pulled from the training topic, transition into why this matters right now, 2-3 punchy value bullets, one clear CTA: ${cta}. Scannable — short paragraphs of 1-3 lines max. Should feel like a message from a trusted friend, not a newsletter.`;
+  callAPI(sys,`Greeting: ${greet}\nCTA: ${cta}\n\nTRANSCRIPT:\n${tx}`,'email-body','email-out','email-btn','Writing your email blast...',false);
+}
+</script>
+</body>
+</html>
