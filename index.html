@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Content Alchemy Studio — Day 4 v4.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p50:#EEEDFE;--p200:#AFA9EC;--p400:#7F77DD;--p600:#534AB7;--p800:#3C3489;
+  --pk50:#FBEAF0;--pk200:#ED93B1;--pk400:#D4537E;
+  --bg:#faf9ff;--surf:#ffffff;--surf2:#f4f2fd;
+  --text:#2D1F4E;--muted:#7B6A9B;--hint:#B0A4CC;
+  --border:rgba(175,169,236,0.25);--border-s:rgba(175,169,236,0.45);
+  --r:14px;--rs:9px;
+}
+body{font-family:'Lato',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HERO */
+.hero{
+  background:linear-gradient(160deg,#2D1F4E 0%,#4A2B7A 45%,#6B3D9A 75%,#3C3489 100%);
+  padding:2.5rem 1.5rem 2.25rem;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(212,83,126,0.18) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(127,119,221,0.25) 0%,transparent 45%),
+    radial-gradient(ellipse at 50% 95%,rgba(175,169,236,0.12) 0%,transparent 40%);
+}
+.hero::after{
+  content:'✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+  position:absolute;top:10px;left:0;right:0;font-size:8px;letter-spacing:5px;
+  color:rgba(255,255,255,0.15);text-align:center;pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;max-width:660px;margin:0 auto}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;
+  background:rgba(175,169,236,0.15);border:1px solid rgba(175,169,236,0.3);
+  color:var(--p200);margin-bottom:1rem;
+}
+.hero h1{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(1.5rem,3.5vw,2.2rem);color:#fff;line-height:1.1;
+  margin-bottom:.4rem;text-shadow:0 2px 24px rgba(80,40,160,0.6);
+}
+.hero h1 span{
+  background:linear-gradient(135deg,#AFA9EC,#ED93B1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:rgba(212,83,126,0.9);margin-bottom:.9rem;}
+.hero p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;max-width:500px;margin:0 auto}
+
+/* CONTAINER */
+.wrap{max-width:800px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+
+/* TABS */
+.tab-row{display:flex;border-bottom:2px solid var(--border);margin-bottom:2rem;overflow-x:auto;scrollbar-width:none;gap:0;}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;
+  padding:11px 16px;border:none;background:none;color:var(--hint);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;
+  transition:color .15s;text-transform:uppercase;}
+.tab:hover{color:var(--muted)}
+.tab.active{color:var(--p400);border-bottom-color:var(--p400)}
+.tbadge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:8px;
+  background:var(--p50);color:var(--p600);margin-left:5px;font-weight:700;}
+.new-badge{background:var(--pk50);color:var(--pk400)}
+
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.5rem;margin-bottom:1rem;box-shadow:0 2px 20px rgba(127,119,221,0.06);}
+.info-box{background:linear-gradient(135deg,var(--p50),var(--pk50));border-radius:var(--rs);
+  padding:12px 16px;font-size:13px;color:var(--p800);line-height:1.65;margin-bottom:1.5rem;
+  border-left:3px solid var(--p400);}
+.info-box strong{font-weight:700;color:var(--p600)}
+
+/* FORM */
+label{display:block;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+input[type=text],select,textarea{width:100%;font-family:'Lato',sans-serif;font-size:14px;
+  color:var(--text);background:var(--surf2);border:1px solid var(--border-s);
+  border-radius:var(--rs);padding:10px 13px;outline:none;
+  transition:border-color .15s,box-shadow .15s;line-height:1.5;}
+input:focus,select:focus,textarea:focus{border-color:var(--p400);box-shadow:0 0 0 3px rgba(127,119,221,0.15);background:var(--surf);}
+textarea{resize:vertical;min-height:100px}
+.section{margin-bottom:1.25rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+
+/* PLATFORM */
+.platform-row{display:flex;gap:8px}
+.platform-btn{flex:1;padding:9px;border:1px solid var(--border-s);border-radius:var(--rs);
+  background:var(--surf2);color:var(--muted);font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;
+  text-transform:uppercase;letter-spacing:.05em;}
+.platform-btn.on{background:linear-gradient(135deg,var(--p50),var(--pk50));border-color:var(--p400);color:var(--p600);}
+
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:.04em;padding:6px 13px;border-radius:20px;border:1px solid var(--border-s);
+  background:var(--surf2);color:var(--muted);transition:all .15s;user-select:none;text-transform:uppercase;}
+.chip:hover{border-color:var(--p400);color:var(--p600)}
+.chip.on{background:linear-gradient(135deg,var(--p50),var(--pk50));border-color:var(--p400);color:var(--p600);}
+
+/* OFFER CARDS */
+.offer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.offer-card{border:1px solid var(--border-s);border-radius:var(--rs);padding:12px 14px;
+  cursor:pointer;transition:all .2s;background:var(--surf2);}
+.offer-card:hover{border-color:var(--p400)}
+.offer-card.on{background:linear-gradient(135deg,var(--p50),var(--pk50));border-color:var(--p400);box-shadow:0 2px 12px rgba(127,119,221,0.15);}
+.offer-icon{font-size:15px;color:var(--p200);margin-bottom:4px}
+.offer-card.on .offer-icon{color:var(--p400)}
+.offer-label{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--text)}
+.offer-card.on .offer-label{color:var(--p800)}
+.offer-sub{font-size:11px;color:var(--hint);margin-top:2px}
+
+/* BUTTON */
+.gen-btn{width:100%;padding:13px;font-family:'Montserrat',sans-serif;font-size:12px;
+  font-weight:900;letter-spacing:.08em;text-transform:uppercase;border-radius:var(--r);
+  border:none;background:linear-gradient(135deg,var(--p400),var(--pk400));color:#fff;
+  cursor:pointer;transition:all .2s;margin-top:.5rem;box-shadow:0 4px 20px rgba(127,119,221,0.3);}
+.gen-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(127,119,221,0.45);filter:brightness(1.05);}
+.gen-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* OUTPUT */
+.out-wrap{margin-top:1.5rem;border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;display:none;box-shadow:0 4px 30px rgba(127,119,221,0.08);}
+.out-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;
+  background:linear-gradient(135deg,var(--p50),var(--pk50));border-bottom:1px solid var(--border-s);}
+.out-lbl{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  color:var(--p600);text-transform:uppercase;letter-spacing:.06em}
+.copy-btn{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.04em;
+  padding:5px 13px;border-radius:var(--rs);text-transform:uppercase;border:1px solid var(--p200);
+  background:var(--surf);color:var(--p600);cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:var(--p400);color:#fff;border-color:var(--p400)}
+.out-body{padding:1.25rem;font-size:13.5px;line-height:1.85;color:var(--text);
+  white-space:pre-wrap;word-break:break-word;background:#fff;min-height:60px;}
+
+/* LOADING */
+.loading{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;padding:1.75rem}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--p400);animation:pulse 1.4s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s;background:var(--pk400)}
+.dot:nth-child(3){animation-delay:.4s;background:var(--p200)}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(.75)}50%{opacity:1;transform:scale(1)}}
+.err-box{background:#fff5f5;border:1px solid #ffcdd2;border-radius:var(--rs);
+  padding:12px 14px;font-size:13px;color:#8b0000;line-height:1.6}
+
+/* STEP WIZARD */
+.step-pills{display:flex;gap:6px;margin-bottom:2rem;flex-wrap:wrap}
+.pill{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 12px;border-radius:20px;
+  background:var(--surf2);border:1px solid var(--border-s);color:var(--hint);transition:all .2s;}
+.pill.active{background:linear-gradient(135deg,var(--p400),var(--pk400));color:#fff;border-color:transparent}
+.pill.done{background:var(--p50);border-color:var(--p200);color:var(--p600)}
+
+.wstep{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--border);}
+.wstep:last-child{border-bottom:none}
+.wstep-num{min-width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p400),var(--pk400));
+  color:#fff;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+  box-shadow:0 2px 10px rgba(127,119,221,0.35);}
+.wstep-body{flex:1}
+.wstep-body h3{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:900;
+  color:var(--p800);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.wstep-body p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.wstep-body p strong{color:var(--text);font-weight:700}
+
+/* PROMPT BOX */
+.prompt-box{background:var(--p800);border-radius:var(--rs);padding:1.25rem;
+  font-family:'Lato',monospace;font-size:12.5px;line-height:1.75;
+  color:rgba(255,255,255,0.88);white-space:pre-wrap;word-break:break-word;
+  margin-top:.75rem;max-height:340px;overflow-y:auto;border:1px solid rgba(175,169,236,0.2);}
+.prompt-box::-webkit-scrollbar{width:4px}
+.prompt-box::-webkit-scrollbar-track{background:transparent}
+.prompt-box::-webkit-scrollbar-thumb{background:rgba(175,169,236,0.3);border-radius:4px}
+.prompt-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.prompt-copy-btn{display:inline-flex;align-items:center;gap:7px;font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;
+  padding:9px 18px;border-radius:var(--rs);cursor:pointer;transition:all .2s;border:none;}
+.prompt-copy-btn.primary{background:linear-gradient(135deg,var(--p400),var(--pk400));color:#fff;
+  box-shadow:0 4px 16px rgba(127,119,221,0.35);}
+.prompt-copy-btn.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.prompt-copy-btn.secondary{background:var(--surf2);color:var(--p600);border:1px solid var(--p200);}
+.prompt-copy-btn.secondary:hover{background:var(--p50)}
+
+/* BRAIN DUMP TOGGLE */
+.mode-toggle-row{display:flex;align-items:center;justify-content:space-between;
+  background:var(--p50);border:1px solid var(--border-s);border-radius:var(--rs);
+  padding:12px 16px;margin-bottom:1.25rem;cursor:pointer;transition:all .15s;}
+.mode-toggle-row:hover{border-color:var(--p400)}
+.mode-toggle-info h4{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:900;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--p600);margin-bottom:2px}
+.mode-toggle-info p{font-size:12px;color:var(--muted);line-height:1.5}
+.toggle-switch{width:44px;height:24px;border-radius:12px;background:var(--border-s);
+  position:relative;flex-shrink:0;transition:background .2s;}
+.toggle-switch.on{background:linear-gradient(135deg,var(--p400),var(--pk400))}
+.toggle-knob{width:18px;height:18px;border-radius:50%;background:#fff;
+  position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+.toggle-switch.on .toggle-knob{left:23px}
+
+/* HOW IT WORKS */
+.step-row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)}
+.step-row:last-child{border-bottom:none}
+.step-num{width:30px;height:30px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:linear-gradient(135deg,var(--p50),var(--pk50));color:var(--p600);
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;border:1px solid var(--p200);}
+.step-txt{font-size:13.5px;color:var(--muted);line-height:1.65}
+.step-txt strong{color:var(--text);font-weight:700}
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* CTA TIER BADGES */
+.tier-explain{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.tier-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border-radius:20px;border:1px solid;}
+.tier-1{background:#f0fdf4;border-color:#86efac;color:#166534}
+.tier-2{background:var(--p50);border-color:var(--p200);color:var(--p600)}
+.tier-3{background:var(--pk50);border-color:var(--pk200);color:var(--pk400)}
+
+footer{text-align:center;padding:2rem 1rem;font-size:12px;color:var(--hint);
+  border-top:1px solid var(--border);margin-top:2rem;font-family:'Montserrat',sans-serif;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+footer .pk{color:var(--pk400)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">✦ Visibility by Design Challenge — Day 4</div>
+    <div class="hero-sub">Content Alchemy Studio</div>
+    <h1>Instagram & TikTok<br/><span>Repurposing Engine</span></h1>
+    <p>Mine your long-form content for 7 standalone short-form ideas — re-recorded, cold-audience optimised, with the right CTA for every clip type.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('briefs')">Content Briefs <span class="tbadge new-badge">v4.1</span></button>
+    <button class="tab" onclick="switchTab('dm')">DM Sequence</button>
+    <button class="tab" onclick="switchTab('caption')">Caption Writer</button>
+    <button class="tab" onclick="switchTab('blog')">Blog Post</button>
+    <button class="tab" onclick="switchTab('email')">Email Blast</button>
+    <button class="tab" onclick="switchTab('howto')">How It Works</button>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 1 — CONTENT BRIEFS
+       Two-step: Setup → Prompt
+  ═══════════════════════════════ -->
+  <div id="tab-briefs">
+
+    <div class="info-box">
+      <strong>How this works:</strong> Fill in your details → copy the custom prompt → open a new Claude chat → paste the prompt first, then your transcript underneath it. Claude mines your content for 7 standalone clip ideas and generates a formatted .docx brief doc ready to use while recording.
+    </div>
+
+    <div class="step-pills">
+      <div class="pill active" id="pill-1">1 · Your Setup</div>
+      <div class="pill" id="pill-2">2 · Copy Prompt</div>
+      <div class="pill" id="pill-3">3 · Open Claude</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="briefs-step1">
+      <div class="card">
+
+        <div class="mode-toggle-row" onclick="toggleBrainDump()" id="bd-row">
+          <div class="mode-toggle-info">
+            <h4 id="bd-label">📹 YouTube Transcript Mode</h4>
+            <p id="bd-desc">Single focused video → 7 clip ideas mined from one content source</p>
+          </div>
+          <div class="toggle-switch" id="bd-toggle"><div class="toggle-knob"></div></div>
+        </div>
+
+        <div class="section">
+          <label>What's the goal of this content right now?</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+            <div class="offer-card on" onclick="setGoal(this,'presence')" id="goal-presence" style="cursor:pointer">
+              <div class="offer-icon">🌱</div>
+              <div class="offer-label">Build my presence</div>
+              <div class="offer-sub">Growing audience, authority + following</div>
+            </div>
+            <div class="offer-card" onclick="setGoal(this,'offer')" id="goal-offer" style="cursor:pointer">
+              <div class="offer-icon">🎯</div>
+              <div class="offer-label">Promote a specific offer</div>
+              <div class="offer-sub">Drive action toward something now</div>
+            </div>
+          </div>
+          <div id="offer-name-field" style="display:none;margin-top:4px">
+            <label>What's the offer? (one line)</label>
+            <input type="text" id="content-goal-offer" placeholder="e.g. Visibility by Design Challenge, my Skool community, a free masterclass..."/>
+          </div>
+        </div>
+
+        <div class="section row2">
+          <div>
+            <label>Your Niche / Audience</label>
+            <input type="text" id="niche" placeholder="e.g. spiritual entrepreneurs, healers, coaches..."/>
+          </div>
+          <div>
+            <label>Platform</label>
+            <div class="platform-row">
+              <button class="platform-btn on" onclick="setPlatform(this,'Instagram Reels')">Instagram</button>
+              <button class="platform-btn" onclick="setPlatform(this,'TikTok')">TikTok</button>
+              <button class="platform-btn" onclick="setPlatform(this,'Both')">Both</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <label>Conversion offer (used when a clip naturally leads to one)</label>
+          <div class="offer-grid" id="offer-grid">
+            <div class="offer-card on" onclick="selectOffer(this)" data-val="video">
+              <div class="offer-icon">▶</div>
+              <div class="offer-label">Full YouTube video</div>
+              <div class="offer-sub">Comment keyword → full training</div>
+            </div>
+            <div class="offer-card" onclick="selectOffer(this)" data-val="freebie">
+              <div class="offer-icon">✦</div>
+              <div class="offer-label">Free resource</div>
+              <div class="offer-sub">Comment keyword → freebie</div>
+            </div>
+            <div class="offer-card" onclick="selectOffer(this)" data-val="skool">
+              <div class="offer-icon">◈</div>
+              <div class="offer-label">Skool community</div>
+              <div class="offer-sub">Comment keyword → community link</div>
+            </div>
+            <div class="offer-card" onclick="selectOffer(this)" data-val="both">
+              <div class="offer-icon">✧</div>
+              <div class="offer-label">Video + Community</div>
+              <div class="offer-sub">Comment keyword → both</div>
+            </div>
+          </div>
+          <div id="freebie-field" style="display:none;margin-top:12px">
+            <label>Describe your freebie in one line</label>
+            <input type="text" id="freebie-desc" placeholder="e.g. a free Human Design visibility guide..."/>
+          </div>
+          <div id="skool-field" style="display:none;margin-top:12px">
+            <label>Your community name</label>
+            <input type="text" id="skool-name" placeholder="e.g. Spiritual Business Skool..."/>
+          </div>
+        </div>
+
+        <div class="section">
+          <label>What to prioritise when mining for clips</label>
+          <div class="chip-group" id="priorities">
+            <span class="chip on" onclick="toggleChip(this)">Share-to-friend potential</span>
+            <span class="chip on" onclick="toggleChip(this)">Hot takes / contrarian angles</span>
+            <span class="chip on" onclick="toggleChip(this)">Specific numbers or frameworks</span>
+            <span class="chip" onclick="toggleChip(this)">Personal story moments</span>
+            <span class="chip" onclick="toggleChip(this)">Myth-busting</span>
+            <span class="chip" onclick="toggleChip(this)">Relatable confession</span>
+          </div>
+        </div>
+
+        <button class="gen-btn" onclick="buildPrompt()">✦ Build my custom prompt →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="briefs-step2" style="display:none">
+      <div class="card">
+        <div class="wstep-body">
+          <h3>✦ Your prompt is ready</h3>
+          <p>Copy it, open a fresh Claude chat, paste the prompt — then paste your transcript underneath it on a new line. Claude handles everything from there.</p>
+        </div>
+        <div class="prompt-box" id="generated-prompt">Building your prompt...</div>
+        <div class="prompt-actions">
+          <button class="prompt-copy-btn primary" onclick="copyPrompt()">
+            <span id="copy-icon">⧉</span> <span id="copy-label">Copy Prompt</span>
+          </button>
+          <button class="prompt-copy-btn secondary" onclick="goBackToStep1()">← Edit Setup</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="wstep">
+          <div class="wstep-num">1</div>
+          <div class="wstep-body">
+            <h3>Copy the prompt above</h3>
+            <p>Hit <strong>Copy Prompt</strong>. Everything — your niche, platform, offer, CTA logic, and brief format — is already baked in.</p>
+          </div>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">2</div>
+          <div class="wstep-body">
+            <h3>Open a new Claude chat</h3>
+            <p>Go to <strong>claude.ai</strong> and start a fresh conversation. This is where the heavy lifting happens — no token limits, no timeouts.</p>
+            <a href="https://claude.ai" target="_blank" style="text-decoration:none">
+              <button class="gen-btn" style="max-width:180px;margin-top:8px;font-size:11px;padding:10px">Open Claude →</button>
+            </a>
+          </div>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">3</div>
+          <div class="wstep-body">
+            <h3>Paste prompt → then transcript below it</h3>
+            <p>Paste the copied prompt into the message box. Then <strong>on a new line, paste your full transcript</strong> underneath. Hit send.</p>
+            <p style="margin-top:8px"><strong>Getting your transcript:</strong> YouTube → three dots → Show transcript → copy all. Raw auto-captions are fine. For voice memos, use Otter.ai or Descript.</p>
+          </div>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">4</div>
+          <div class="wstep-body">
+            <h3>Get your 7 briefs + downloadable doc</h3>
+            <p>Claude mines your content for 7 standalone clip opportunities, writes each ideation brief, then generates a <strong>Node.js script</strong> that creates a formatted .docx — open it in Google Drive and use it while you record.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-briefs -->
+
+  <!-- ══════════════════════════════
+       TAB 2 — DM SEQUENCE
+  ═══════════════════════════════ -->
+  <div id="tab-dm" style="display:none">
+    <div class="info-box">Write your 3-part DM sequence before your first clip goes live — instant reply, 24hr follow-up, and a soft close. Load into ManyChat so it fires automatically on Instagram.</div>
+    <div class="card">
+      <div class="section row2">
+        <div><label>Comment keyword</label><input type="text" id="dm-kw" placeholder="e.g. VISIBILITY, DESIGN, FREE..."/></div>
+        <div>
+          <label>What you're sending</label>
+          <select id="dm-type">
+            <option>Full YouTube video link</option>
+            <option>Free resource / freebie</option>
+            <option>Skool community link</option>
+            <option>Video + Skool link</option>
+          </select>
+        </div>
+      </div>
+      <div class="section row2">
+        <div><label>Community or offer name</label><input type="text" id="dm-community" placeholder="e.g. Spiritual Business Skool..."/></div>
+        <div>
+          <label>DM tone</label>
+          <select id="dm-tone">
+            <option>Warm and personal</option>
+            <option>Hype and celebratory</option>
+            <option>Soft and nurturing</option>
+            <option>Direct and strategic</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="dm-btn" onclick="generateDM()">✦ Write my DM sequence</button>
+    </div>
+    <div class="out-wrap" id="dm-out">
+      <div class="out-head"><span class="out-lbl">3-part DM sequence</span><button class="copy-btn" onclick="copyEl('dm-body')">Copy</button></div>
+      <div class="out-body" id="dm-body"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 3 — CAPTION WRITER
+  ═══════════════════════════════ -->
+  <div id="tab-caption" style="display:none">
+    <div class="info-box">Paste a clip idea or key talking points and get a full caption with the right CTA and hashtags. Caption style is automatically matched to the clip type — Discovery clips get short and punchy, Authority and Conversion clips get storytelling, Tier 2 CTA clips get engagement-first.</div>
+
+    <div class="tier-explain">
+      <span class="tier-badge tier-1">🎯 Tier 1: Comment keyword → DM</span>
+      <span class="tier-badge tier-2">💬 Tier 2: Engagement question</span>
+      <span class="tier-badge tier-3">✨ Tier 3: Follow for more</span>
+    </div>
+
+    <div class="card">
+      <div class="section">
+        <label>Clip idea or key talking points</label>
+        <textarea id="cap-clip" rows="5" placeholder="Paste your clip concept from the brief doc — the core idea, bullet points, or what you plan to say..."></textarea>
+      </div>
+      <div class="section row2">
+        <div>
+          <label>CTA type for this clip</label>
+          <select id="cap-cta-type" onchange="updateCaptionCTANote()">
+            <option value="keyword">Tier 1 — Comment keyword → DM (clip ties to an offer)</option>
+            <option value="question">Tier 2 — Engagement question (hot take, story, standalone)</option>
+            <option value="follow">Tier 3 — Follow for more (pure discovery/reach clip)</option>
+          </select>
+        </div>
+        <div>
+          <label>Platform</label>
+          <select id="cap-platform" onchange="updateCaptionHashtagNote()">
+            <option>Instagram Reels</option>
+            <option>TikTok</option>
+            <option>Both</option>
+          </select>
+        </div>
+      </div>
+      <div id="cap-kw-row" class="section">
+        <label>Comment keyword</label>
+        <input type="text" id="cap-kw" placeholder="e.g. VISIBILITY, DESIGN, SYSTEM..."/>
+      </div>
+      <div id="hashtag-note" class="info-box" style="font-size:12px;margin-bottom:.75rem;margin-top:-.5rem">
+        Instagram: 5 hashtags max (Instagram capped all posts at 5 in Dec 2025). Pick the 5 most strategic.
+      </div>
+      <button class="gen-btn" id="cap-btn" onclick="generateCaption()">✦ Write my caption</button>
+    </div>
+    <div class="out-wrap" id="cap-out">
+      <div class="out-head"><span class="out-lbl">Caption + hashtags</span><button class="copy-btn" onclick="copyEl('cap-body')">Copy</button></div>
+      <div class="out-body" id="cap-body"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 4 — BLOG POST
+  ═══════════════════════════════ -->
+  <div id="tab-blog" style="display:none">
+    <div class="info-box">Turn your transcript into a full SEO-optimised blog post. For long transcripts, paste them in a separate Claude chat instead of here.</div>
+    <div class="card">
+      <div class="section">
+        <label>Transcript or key talking points (keep under ~3,000 words here)</label>
+        <textarea id="blog-tx" rows="6" placeholder="Paste transcript here. For longer transcripts, use a separate Claude chat instead."></textarea>
+      </div>
+      <div class="section row2">
+        <div><label>Focus keyword</label><input type="text" id="blog-kw" placeholder="e.g. spiritual entrepreneur visibility..."/></div>
+        <div>
+          <label>Internal link destination</label>
+          <select id="blog-link">
+            <option>Skool community</option>
+            <option>YouTube channel</option>
+            <option>Free resource</option>
+            <option>All three</option>
+          </select>
+        </div>
+      </div>
+      <button class="gen-btn" id="blog-btn" onclick="generateBlog()">✦ Write my blog post</button>
+    </div>
+    <div class="out-wrap" id="blog-out">
+      <div class="out-head"><span class="out-lbl">SEO blog post</span><button class="copy-btn" onclick="copyEl('blog-body')">Copy</button></div>
+      <div class="out-body" id="blog-body"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 5 — EMAIL BLAST
+  ═══════════════════════════════ -->
+  <div id="tab-email" style="display:none">
+    <div class="info-box">One broadcast email from your video — drives your list to watch, grab the freebie, or join your community. Written in your voice.</div>
+    <div class="card">
+      <div class="section">
+        <label>Transcript or key points (keep under ~3,000 words here)</label>
+        <textarea id="email-tx" rows="5" placeholder="Paste transcript here. For longer transcripts, use a separate Claude chat instead."></textarea>
+      </div>
+      <div class="section row2">
+        <div><label>How you greet your list</label><input type="text" id="email-greet" placeholder="e.g. Hey love, Hi beautiful..."/></div>
+        <div>
+          <label>Primary CTA</label>
+          <select id="email-cta">
+            <option>Watch the full YouTube video</option>
+            <option>Grab the free resource</option>
+            <option>Join my community</option>
+            <option>Watch video + join community</option>
+          </select>
+        </div>
+      </div>
+      <div class="section">
+        <label>Brand voice</label>
+        <div class="chip-group" id="email-voice">
+          <span class="chip on" onclick="toggleCS(this,'email-voice')">Soft life, savage execution</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Warm spiritual teacher</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Hype coach energy</span>
+          <span class="chip" onclick="toggleCS(this,'email-voice')">Grounded and honest</span>
+        </div>
+      </div>
+      <button class="gen-btn" id="email-btn" onclick="generateEmail()">✦ Write my email blast</button>
+    </div>
+    <div class="out-wrap" id="email-out">
+      <div class="out-head"><span class="out-lbl">Broadcast email</span><button class="copy-btn" onclick="copyEl('email-body')">Copy</button></div>
+      <div class="out-body" id="email-body"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 6 — HOW IT WORKS
+  ═══════════════════════════════ -->
+  <div id="tab-howto" style="display:none">
+    <div class="info-box"><strong>The Content Alchemy system:</strong> One video or brain dump → 7 standalone short-form ideas → re-recorded clips → the right CTA for each clip type → new community members. Repeat weekly.</div>
+
+    <div class="card">
+      <div class="step-row"><div class="step-num">1</div><div class="step-txt"><strong>Record your YouTube long-form or do a brain dump</strong> — this is your content mine. Every short-form idea gets extracted from here. A 20-min video can fuel an entire week of content.</div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-txt"><strong>Get your transcript</strong> — YouTube → three dots → "Show transcript" → copy all. Raw auto-captions work fine. For voice memos, use Otter.ai or Descript to auto-transcribe.</div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-txt"><strong>Use the Content Briefs tab</strong> — fill in your setup, hit Build My Prompt, copy it, paste into a fresh Claude chat with your transcript underneath. Claude mines the content for 7 standalone clip opportunities and writes each brief as a starting point — not a script.</div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-txt"><strong>Re-record each clip natively</strong> — never cut from the YouTube video. Each brief gives you the core idea, a hook, bullet points of what to cover, and cold-audience framing notes. Show up on camera and make it your own. Re-records massively outperform cuts on short-form platforms in 2026.</div></div>
+      <div class="step-row"><div class="step-num">5</div><div class="step-txt"><strong>Use the right CTA for each clip type</strong> — not every clip should have a comment keyword. Conversion clips get comment-to-DM. Story and hot-take clips get an engagement question. Pure reach/Discovery clips get a follow. Forcing a keyword CTA onto the wrong clip type hurts performance.</div></div>
+      <div class="step-row"><div class="step-num">6</div><div class="step-txt"><strong>Set up your DM sequence before you post</strong> — use the DM Sequence tab. Load the sequence into ManyChat so it fires automatically when someone comments. On TikTok, ask people to DM you the keyword directly — comment-to-DM automation is Instagram only.</div></div>
+      <div class="step-row"><div class="step-num">7</div><div class="step-txt"><strong>Stack the content ecosystem</strong> — Caption Writer for paste-ready captions, Blog Post for Google traffic, Email Blast to notify your list. One video, seven content touchpoints, zero overwhelm.</div></div>
+      <div class="step-row"><div class="step-num">✦</div><div class="step-txt"><strong>Auto-distribute everywhere at once</strong> — <a href="https://repurpose.io?fpr=507507" target="_blank" style="color:var(--p400);font-weight:700;text-decoration:underline">Repurpose.io</a> connects YouTube, Instagram, TikTok, Facebook, LinkedIn and more so one upload goes everywhere automatically.</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card">
+      <label>The 3 CTA tiers — and why they matter</label>
+      <div class="step-txt" style="margin-top:10px;font-size:13.5px">
+        <strong>Tier 1 — Comment keyword → DM:</strong> Only use when the clip is directly relevant to something you can send them — a free resource, the full video, or your community. The value exchange has to feel obvious and earned. This is where conversions happen.<br/><br/>
+        <strong>Tier 2 — Engagement question:</strong> For hot takes, personal stories, and standalone insights that don't naturally connect to an offer. Asking a genuine question ("Does this resonate with you?" or "Which stage are you in?") builds comment count, trains the algorithm, and deepens connection — without feeling forced.<br/><br/>
+        <strong>Tier 3 — Follow for more:</strong> For pure Discovery clips — pattern interrupts, broad contrarian takes, wide-appeal content. The only ask is the follow. Maximises reach signal and builds the audience that converts later.
+      </div>
+      <div class="divider"></div>
+      <label>Why ideation briefs instead of scripts</label>
+      <div class="step-txt" style="margin-top:8px;font-size:13.5px">The tool extracts ideas and gives you a starting point — not a word-for-word script. The best short-form content is delivered fresh, in your own energy, in the moment. A brief tells you what the clip is about, what hook to open with, what points to hit, and how to frame it for a cold audience. You show up and make it yours. That's what performs.</div>
+      <div class="divider"></div>
+      <label>Hashtags in 2026 — what actually changed</label>
+      <div class="step-txt" style="margin-top:8px;font-size:13.5px">Instagram capped all posts at 5 hashtags in December 2025. TikTok recommends 3–5. Neither platform uses hashtags for reach anymore — they're purely a search and categorisation signal. The energy you used to put into hashtag research is better spent on keyword-rich captions and spoken words in the video itself, since both platforms now index audio and on-screen text for search.</div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <span class="pk">✦</span> Content Alchemy Studio &nbsp;·&nbsp; Visibility by Design Challenge — Day 4 &nbsp;·&nbsp; v4.1 <span class="pk">✦</span>
+</footer>
+
+<script>
+// ─── STATE ─────────────────────────────────────────
+let selectedPlatform = 'Instagram Reels';
+let selectedOffer = 'video';
+let brainDumpMode = false;
+let contentGoal = 'presence';
+
+// ─── CONTENT GOAL ──────────────────────────────────
+function setGoal(el, val) {
+  document.getElementById('goal-presence').classList.remove('on');
+  document.getElementById('goal-offer').classList.remove('on');
+  el.classList.add('on');
+  contentGoal = val;
+  document.getElementById('offer-name-field').style.display = val === 'offer' ? 'block' : 'none';
+}
+
+// ─── PLATFORM ──────────────────────────────────────
+function setPlatform(el, val) {
+  document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  selectedPlatform = val;
+}
+
+// ─── OFFER ─────────────────────────────────────────
+function selectOffer(el) {
+  document.querySelectorAll('.offer-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  selectedOffer = el.getAttribute('data-val');
+  document.getElementById('freebie-field').style.display = selectedOffer === 'freebie' ? 'block' : 'none';
+  document.getElementById('skool-field').style.display = (selectedOffer === 'skool' || selectedOffer === 'both') ? 'block' : 'none';
+}
+
+function getOffer() {
+  const freebie = gv('freebie-desc');
+  const skool = gv('skool-name') || 'my community';
+  if (selectedOffer === 'video') return 'the full YouTube video link';
+  if (selectedOffer === 'freebie') return freebie ? `a free resource: "${freebie}"` : 'a free resource';
+  if (selectedOffer === 'skool') return `a link to join ${skool}`;
+  if (selectedOffer === 'both') return `the full YouTube video plus access to ${skool}`;
+  return 'the full YouTube video link';
+}
+
+function getConversionCTA() {
+  const freebie = gv('freebie-desc');
+  const skool = gv('skool-name') || 'my community';
+  if (selectedOffer === 'video') return "Comment [KEYWORD] and I'll send you the full video";
+  if (selectedOffer === 'freebie') return freebie ? `Comment [KEYWORD] and I'll send you ${freebie}` : "Comment [KEYWORD] and I'll send you the free resource";
+  if (selectedOffer === 'skool') return `Comment [KEYWORD] and I'll send you the link to join ${skool}`;
+  if (selectedOffer === 'both') return `Comment [KEYWORD] and I'll send you the full training plus the link to join ${skool}`;
+  return "Comment [KEYWORD] and I'll send you the full video";
+}
+
+// ─── HELPERS ───────────────────────────────────────
+function toggleLength(el) { el.classList.toggle('on'); }
+function toggleChip(el) { el.classList.toggle('on'); }
+function toggleCS(el, gid) {
+  document.querySelectorAll('#' + gid + ' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+function getChips(gid) {
+  return [...document.querySelectorAll('#' + gid + ' .chip.on')].map(c => c.textContent.trim()).join(', ');
+}
+function gv(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function showLoad(bodyId, msg) {
+  document.getElementById(bodyId).innerHTML = `<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>${msg || 'Generating...'}</span></div>`;
+}
+function showErr(bodyId, msg) {
+  document.getElementById(bodyId).innerHTML = `<div class="err-box">${msg}</div>`;
+}
+function copyEl(id) {
+  const text = document.getElementById(id).textContent;
+
+  function onSuccess() {
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      if (btn.getAttribute('onclick')?.includes(id)) {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => btn.textContent = orig, 2000);
+      }
+    });
+  }
+
+  function fallbackCopy() {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      if (document.execCommand('copy')) onSuccess();
+    } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+// ─── BRAIN DUMP TOGGLE ─────────────────────────────
+function toggleBrainDump() {
+  brainDumpMode = !brainDumpMode;
+  document.getElementById('bd-toggle').classList.toggle('on', brainDumpMode);
+  document.getElementById('bd-label').textContent = brainDumpMode ? '🧠 Brain Dump Mode' : '📹 YouTube Transcript Mode';
+  document.getElementById('bd-desc').textContent = brainDumpMode
+    ? 'Raw voice memo, mixed topics, or stream of consciousness — Claude identifies each distinct idea separately'
+    : 'Single focused video → 7 clip ideas mined from one content source';
+}
+
+// ─── TAB SWITCHING ─────────────────────────────────
+function switchTab(t) {
+  ['briefs', 'dm', 'caption', 'blog', 'email', 'howto'].forEach((id, i) => {
+    document.getElementById('tab-' + id).style.display = id === t ? 'block' : 'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active', id === t);
+  });
+}
+
+// ─── CAPTION CTA NOTE ──────────────────────────────
+function updateCaptionCTANote() {
+  const type = document.getElementById('cap-cta-type').value;
+  document.getElementById('cap-kw-row').style.display = type === 'keyword' ? 'block' : 'none';
+}
+
+function updateCaptionHashtagNote() {
+  const platform = document.getElementById('cap-platform').value;
+  const note = document.getElementById('hashtag-note');
+  if (platform === 'TikTok') {
+    note.innerHTML = '<strong>TikTok:</strong> 3–5 hashtags recommended. Pick the most strategic for this specific clip\'s topic.';
+  } else if (platform === 'Instagram Reels') {
+    note.innerHTML = '<strong>Instagram:</strong> 5 hashtags max (capped Dec 2025). Make each one count — niche-specific beats high-volume generic.';
+  } else {
+    note.innerHTML = '<strong>Both platforms:</strong> Claude will write two separate hashtag blocks — 5 for Instagram, 3–5 for TikTok.';
+  }
+}
+
+// ─── PROMPT BUILDER ────────────────────────────────
+function buildPrompt() {
+  const niche = gv('niche') || 'spiritual entrepreneurs and coaches';
+  const offer = getOffer();
+  const conversionCTA = getConversionCTA();
+  const platform = selectedPlatform;
+  const priorities = getChips('priorities') || 'share-to-friend potential, hot takes, specific frameworks';
+  const goalOfferName = gv('content-goal-offer');
+
+  const intentionNote = contentGoal === 'offer'
+    ? `CONTENT INTENTION: This creator is actively promoting a specific offer right now: ${goalOfferName || 'their offer'}.
+- Clips that naturally connect to this offer should point toward it — even if the clip content isn't directly about the offer. A clip about ads strategy, visibility, or business mindset can still end with a CTA for the challenge/community if the offer is where they go to implement what the clip teaches.
+- The connection must feel earned and logical — not forced. If a clip topic has no natural bridge to the offer, assign Tier 2 or Tier 3 instead.
+- In the Weekly Calendar, include a note on how the week's sequence collectively builds toward the offer.`
+    : `CONTENT INTENTION: This creator is focused on building their presence, authority, and following right now — not pushing a specific offer.
+- Lean toward reach, engagement, and community-building CTAs across the set.
+- Tier 1 CTAs are appropriate when the clip naturally leads to a free resource or the YouTube video itself. Tier 2 and Tier 3 should feature prominently.
+- In the Weekly Calendar, frame the week's strategy around audience growth and trust-building.`;
+
+  const platformNote = platform === 'TikTok'
+    ? `PLATFORM: TikTok only.
+- TikTok does NOT support comment-to-DM automation in most markets. For Tier 1 CTAs: use "DM me [KEYWORD]" not "Comment [KEYWORD]."
+- Hashtags: 3–5 per clip. TikTok uses hashtags for content categorisation and search, not reach.`
+    : platform === 'Instagram Reels'
+    ? `PLATFORM: Instagram Reels only.
+- Instagram fully supports comment-to-DM automation via ManyChat. Tier 1 CTA: "Comment [KEYWORD] below."
+- Hashtags: maximum 5 per post (Instagram capped all posts at 5 in December 2025). Choose niche-specific over high-volume generic.`
+    : `PLATFORM: Both Instagram and TikTok.
+- Instagram: comment-to-DM automation via ManyChat ("Comment [KEYWORD]"). Max 5 hashtags.
+- TikTok: no comment-to-DM in most markets — use "DM me [KEYWORD]." 3–5 hashtags.
+- For Tier 1 clips, write two CTA lines: one for each platform. For hashtags, write two separate blocks: INSTAGRAM HASHTAGS (5 max) and TIKTOK HASHTAGS (3–5).`;
+
+  const inputNote = brainDumpMode
+    ? `SOURCE TYPE: Brain Dump / mixed content. This is NOT from a single focused video — it may contain multiple unrelated topics, stories, or ideas.
+- Scan the full content and identify each DISTINCT topic, idea, story, or insight as a separate clip opportunity
+- Build each brief from its own source moment — never blend unrelated content
+- Only use details, stats, or claims explicitly stated in the source — never invent or embellish
+- For any insider term, niche concept, or reference that requires prior knowledge: write the plain-language explanation the creator should say on camera. Do NOT flag it as a fix — solve it directly in the brief.`
+    : `SOURCE TYPE: YouTube video transcript — single focused topic.
+- Mine the transcript for the 7 most short-form worthy moments across different subtopics or angles
+- Only use details, statistics, dollar amounts, timeframes, and claims explicitly stated in the transcript — never invent or embellish
+- For any insider term, niche concept, or reference that requires prior knowledge: write the plain-language explanation the creator should say on camera. Do NOT flag it as a fix — solve it directly in the brief.`;
+
+  const ctaFramework = `CTA TIER FRAMEWORK — apply the correct tier to each clip, do not force Tier 1 onto every clip:
+
+TIER 1 — Comment Keyword → DM (Conversion)
+Use ONLY when: the clip's content naturally leads to the offer and the value exchange feels obvious and earned. The viewer would naturally think "I want more of exactly this."
+Conversion offer for this creator: ${offer}
+CTA format: ${conversionCTA}
+Include: COMMENT KEYWORD (one word in caps) + why this word converts better than alternatives
+
+TIER 2 — Engagement Question (Connection)
+Use when: the clip is a hot take, personal story, myth-bust, or standalone insight that doesn't naturally tie to the offer. A forced keyword CTA here hurts authenticity and performance.
+CTA format: Write a genuine question that invites the viewer to share their perspective, experience, or opinion in the comments. Make it specific to the clip's content — not generic.
+No keyword needed.
+
+TIER 3 — Follow for More (Reach)
+Use when: the clip is pure Discovery content — broad appeal, pattern interrupt, contrarian take designed to reach new audiences. The only ask is the follow.
+CTA format: One warm, natural line that signals there's more where that came from. No keyword, no offer, no pressure.`;
+
+  const hashtagRules = `HASHTAG RULES — critical for correct algorithm categorisation:
+- Hashtags must be derived from what the clip is ACTUALLY ABOUT — the specific topic, location, concept, or search intent of that individual clip
+- Do NOT pull from the creator's niche or audience identity unless the clip is directly about that topic
+- Ask yourself: what would a complete stranger type into TikTok or Instagram search to find this specific video?
+- Example: a clip about Croatian visa wait times → #croatiadigitalnomad #digitalnomadvisa #expatcroatia #movingabroad #visaprocess — NOT #spiritualbusiness #femaleentrepreneur
+- Example: a clip about astrocartography and relationships → #astrocartography #venusline #astrologytiktok #manifestation #spiritualrelationships
+- Mix: 1–2 broad searchable terms + 2–3 niche-specific terms that match the clip's exact subject matter
+- Max 5 for Instagram, 3–5 for TikTok`;
+
+  const outputFormat = `═══════════════════════════════════════
+OUTPUT FORMAT — 7 IDEATION BRIEFS
+═══════════════════════════════════════
+
+For each of the 7 clips, use this EXACT structure:
+
+---
+CLIP [#] — [Punchy title that works as a standalone concept] | [Suggested length: 15–30s / 30–60s / 60–90s] | [Goal: Discovery / Authority / Conversion]
+
+SOURCE MOMENT:
+[1–2 sentences describing the specific idea, insight, or story from the source that inspired this clip. Stay true to what was actually said.]
+
+WHY THIS IS SHORT-FORM WORTHY:
+[1 sentence — what makes this specific moment worth making a video about. Is it contrarian? Surprising? Universally relatable? Specific and credible?]
+
+TEXT ON SCREEN (frame 1 graphic):
+Text: [3–7 words max — the visual hook that works on mute, matches the strongest verbal hook]
+Placement: [upper third / center / lower third]
+Style: [specific direction: font weight, color emphasis, any emoji to add and where]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT TO SAY ON CAMERA — IN THIS ORDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+① COLD OPEN — say this FIRST (1–2 sentences spoken before anything else)
+"[Write the exact words the creator speaks at the very start of the video. This primes the cold viewer — it tells a complete stranger who this is for and why it matters before the hook drops. Without this, cold audiences don't know if the hook is relevant to them.]"
+Why this comes first: [1 sentence explaining what it does for a cold viewer]
+
+② VERBAL HOOK — say this SECOND (first 1.5 seconds after the cold open)
+
+OPTION A — [Hook type: CONTRARIAN / LOSS AVERSION / CURIOSITY GAP / STORY OPEN / SOCIAL PROOF]
+"[Hook line]"
+
+OPTION B — [Different hook type from Option A]
+"[Hook line]"
+
+OPTION C — [Different hook type from Options A and B]
+"[Hook line]"
+
+Pick the option that feels most natural on camera. The hook creates the open loop that keeps them watching.
+
+HOOK QUALITY CHECK — each option above must pass ALL of these before being included:
+✓ Works for a complete stranger who has never seen this creator
+✓ Creates an immediate open loop or emotional trigger in under 1.5 seconds
+✓ Does NOT give away the answer or payoff
+✓ Works on mute — the meaning is clear without audio
+Replace any option that fails.
+
+③ BODY — hit these beats in your own words and energy
+• [Beat 1 — derived from source material]
+• [Beat 2]
+• [Beat 3]
+• [Beat 4]
+• [Beat 5 if needed]
+• 💡 SUGGESTED ADDITION: [If there's something not in the source that would make this land harder for a cold audience — a universal relatable opener, a specific stat they could look up, a comparison that gives context — add it here as its own bullet, clearly labeled with 💡 SUGGESTED ADDITION so the creator knows it's a strategic idea, not something from their content. They decide whether to use it.]
+These are conversation starters, not a script. Speak them naturally — don't read them.
+CRITICAL: If any beat uses an insider term, niche concept, location, or reference a cold viewer might not know — write the plain-language explanation they should say on camera right here, worded exactly as they would say it. Do not flag it. Solve it in the beat itself.
+
+④ CTA — say this LAST
+[Write the CTA line based on the tier below — this is the last thing they say on camera]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CTA TIER: [Tier 1 / Tier 2 / Tier 3]
+Why this tier: [1 sentence]
+${platform !== 'TikTok' ? 'For Tier 1 clips: COMMENT KEYWORD: [WORD] — Why it converts: [1 sentence]' : 'For Tier 1 clips: DM KEYWORD: [WORD] — Why it converts: [1 sentence]'}
+${platform === 'Both' ? 'For Tier 1 clips: write both Instagram ("Comment [KEYWORD]") and TikTok ("DM me [KEYWORD]") CTA versions.' : ''}
+
+CAPTION:
+Assign the correct caption style based on THIS clip's goal and length — do not use the same style for every clip:
+• Discovery clip (15–30s) → SHORT + PUNCHY: 2–3 lines. First line is a standalone scroll-stopping statement (no question mark, no em dash). 1–2 body lines that tease without giving everything away. Then the CTA. Fast and direct — matches the energy of a short clip.
+• Authority clip (30–60s) → STORYTELLING: 4–6 lines. First line opens a loop or makes a bold statement. 2–4 lines that build context, tension, or relatability before the payoff. Then the CTA. Reads like a message from a trusted friend.
+• Conversion clip (60–90s) → STORYTELLING WITH URGENCY: Same as Authority but the CTA lands harder — the body lines build more desire around what's inside the offer.
+• Any clip with a Tier 2 CTA → ENGAGEMENT-FIRST: Whatever the length, the caption closes with the genuine question from the CTA. The body lines invite reflection, not conversion.
+Write the full paste-ready caption here. No em dashes. Spoken not written. End with the CTA line.
+
+HASHTAGS:
+[Derived from this clip's specific subject matter — what a stranger would search to find this video. ${platform === 'Both' ? 'Write two blocks: INSTAGRAM (5 max) and TIKTOK (3–5).' : platform === 'TikTok' ? '3–5 hashtags.' : 'Max 5 hashtags.'}]
+---
+
+═══════════════════════════════════════
+WEEKLY CONTENT CALENDAR
+═══════════════════════════════════════
+After all 7 briefs, write a simple weekly posting schedule:
+
+Monday → Friday + Weekend: Clip # — [title] — [length] — [one sentence on why this clip goes on this day — reach, trust, or conversion logic]
+Strategic logic: [2 sentences on how the sequence moves a cold viewer from discovery to conversion across the week]
+
+═══════════════════════════════════════
+DOCX SCRIPT — GENERATE THIS LAST
+═══════════════════════════════════════
+After writing all 7 briefs and the calendar, output a complete Node.js script using the "docx" npm package that generates a formatted .docx file.
+
+Document requirements:
+- Title page: "Content Alchemy Studio — Short-Form Ideation Briefs" with subtitle showing niche and platform
+- Each clip on its own clearly separated section with a styled header (use color #7F77DD for clip headers)
+- The "WHAT TO SAY ON CAMERA" section must be the visual centrepiece of each clip — numbered ① ② ③ ④ with clear labels
+- BODY beats formatted as a proper bullet list — easy to scan while recording. Any 💡 SUGGESTED ADDITION bullets must be visually distinct (e.g. italic or different indent) so the creator can spot them at a glance
+- CAPTION displayed prominently as a clearly labeled paste-ready field
+- Weekly Content Calendar as a final section
+- US Letter page size, 1-inch margins, clean readable fonts
+- A page break between each clip
+
+Wrap the complete Node.js script in a \`\`\`javascript code block.
+After the script, add:
+"To generate your .docx: paste this script into a Claude chat that has computer use enabled, or ask me to run it right here."
+
+═══════════════════════════════════════
+TRANSCRIPT BELOW — START HERE
+═══════════════════════════════════════
+[Paste your full transcript on a new line below this line]`;
+
+  const fullPrompt = `You are a world-class short-form content strategist for spiritual entrepreneurs, online coaches, and heart-centered creators. You understand that in 2026, short-form content is shown to existing followers first before reaching cold audiences — and that re-recorded standalone clips built for cold discovery dramatically outperform anything cut from a longer video.
+
+Your job is NOT to transcribe or summarise what was said. Your job is to identify the moments in this content that have the highest potential as standalone short-form clips for a cold audience — then write ideation briefs that give the creator a starting point to re-record in their own words and energy.
+
+AUDIENCE NICHE: ${niche}
+CLIP PRIORITY: ${priorities}
+${platformNote}
+
+${intentionNote}
+
+${inputNote}
+
+${ctaFramework}
+
+${hashtagRules}
+
+${outputFormat}`;
+
+  document.getElementById('generated-prompt').textContent = fullPrompt;
+  document.getElementById('briefs-step1').style.display = 'none';
+  document.getElementById('briefs-step2').style.display = 'block';
+  document.getElementById('pill-1').classList.remove('active');
+  document.getElementById('pill-1').classList.add('done');
+  document.getElementById('pill-2').classList.add('active');
+}
+
+function goBackToStep1() {
+  document.getElementById('briefs-step1').style.display = 'block';
+  document.getElementById('briefs-step2').style.display = 'none';
+  document.getElementById('pill-1').classList.add('active');
+  document.getElementById('pill-1').classList.remove('done');
+  document.getElementById('pill-2').classList.remove('active');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('generated-prompt').textContent;
+
+  function onSuccess() {
+    document.getElementById('copy-label').textContent = 'Copied! ✓';
+    document.getElementById('copy-icon').textContent = '✓';
+    setTimeout(() => {
+      document.getElementById('copy-label').textContent = 'Copy Prompt';
+      document.getElementById('copy-icon').textContent = '⧉';
+    }, 2500);
+    document.getElementById('pill-2').classList.remove('active');
+    document.getElementById('pill-2').classList.add('done');
+    document.getElementById('pill-3').classList.add('active');
+  }
+
+  function fallbackCopy() {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      const ok = document.execCommand('copy');
+      if (ok) { onSuccess(); }
+      else { alert('Copy failed — select the text in the box above and copy with Ctrl+C / Cmd+C.'); }
+    } catch(e) {
+      alert('Copy failed — select the text in the box above and copy with Ctrl+C / Cmd+C.');
+    }
+    document.body.removeChild(ta);
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+// ─── CORE API CALL ──────────────────────────────────
+async function callAPI(system, userMsg, bodyId, outId, btnId, loadMsg) {
+  document.getElementById(outId).style.display = 'block';
+  document.getElementById(btnId).disabled = true;
+  showLoad(bodyId, loadMsg || 'Generating...');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 4000,
+        system,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      if (res.status === 401) showErr(bodyId, 'Authentication error — open this file inside Claude.ai while logged in.');
+      else if (res.status === 429) showErr(bodyId, 'Rate limit hit. Wait 30 seconds and try again.');
+      else showErr(bodyId, `Error (${res.status}): ${e?.error?.message || 'Unknown error'}. Try again.`);
+      return;
+    }
+    const data = await res.json();
+    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('\n') || 'No response — try again.';
+    document.getElementById(bodyId).textContent = text;
+  } catch (e) {
+    showErr(bodyId, `Network error: ${e.message}. Make sure you're using this inside Claude.ai.`);
+  } finally {
+    document.getElementById(btnId).disabled = false;
+  }
+}
+
+// ─── DM SEQUENCE ───────────────────────────────────
+async function generateDM() {
+  const kw = gv('dm-kw') || '[KEYWORD]';
+  const type = gv('dm-type');
+  const community = gv('dm-community') || 'my community';
+  const tone = gv('dm-tone');
+  const sys = `You write short, warm, converting DM sequences for online coaches and spiritual entrepreneurs. Write exactly 3 messages clearly labeled MESSAGE 1, MESSAGE 2, MESSAGE 3:
+MESSAGE 1: Sent instantly when they comment or DM — delivers exactly what was promised, warm and genuine, one soft invitation to go deeper. 3–4 sentences max.
+MESSAGE 2: Follow-up 24hrs later if no reply — friendly check-in, zero pressure, makes it easy to respond. 2–3 sentences.
+MESSAGE 3: Soft close 48hrs later — light genuine urgency, no manipulation or false scarcity. 3 sentences max.
+Tone: ${tone}. Conversational, personal, sounds like a real human. No excessive emojis. No corporate language. No em dashes.`;
+  callAPI(sys, `Comment keyword: ${kw}\nSending them: ${type}\nCommunity or offer name: ${community}`, 'dm-body', 'dm-out', 'dm-btn', 'Writing your DM sequence...');
+}
+
+// ─── CAPTION WRITER ────────────────────────────────
+async function generateCaption() {
+  const clip = gv('cap-clip');
+  if (!clip) { alert('Paste your clip idea or talking points first.'); return; }
+  const ctaType = document.getElementById('cap-cta-type').value;
+  const kw = gv('cap-kw') || 'COMMENT';
+  const platform = gv('cap-platform');
+
+  const ctaInstruction = ctaType === 'keyword'
+    ? `CTA type: Tier 1 — Comment keyword to DM. End the caption with a specific, benefit-driven CTA using keyword: ${kw}. Make the value exchange crystal clear.`
+    : ctaType === 'question'
+    ? `CTA type: Tier 2 — Engagement question. End with a genuine, specific question that invites the viewer to share their perspective or experience. No keyword, no offer.`
+    : `CTA type: Tier 3 — Follow for more. End with a warm, natural line signalling there's more where this came from. No keyword, no offer, no pressure.`;
+
+  const captionStyleInstruction = ctaType === 'question'
+    ? `CAPTION STYLE: Engagement-first. The body lines invite reflection and relatability. Close with the genuine question — that IS the CTA.`
+    : `CAPTION STYLE: Match to the clip's content type automatically:
+- If this is a short punchy insight, contrarian take, or 15–30s clip → SHORT + PUNCHY: 2–3 lines, scroll-stop first line, fast read.
+- If this is a story, authority teaching, or 30–90s clip → STORYTELLING: 4–6 lines, open loop first, build context before the CTA.`;
+
+  const hashtagInstruction = platform === 'TikTok'
+    ? 'End with "HASHTAGS:" followed by 3–5 hashtags matching this clip\'s specific topic — what a stranger would search to find this video. Include # symbols.'
+    : platform === 'Instagram Reels'
+    ? 'End with "HASHTAGS:" followed by exactly 5 hashtags (Instagram\'s cap as of Dec 2025) — derived from what this clip is actually about, not the creator\'s general niche. Include # symbols.'
+    : 'End with "INSTAGRAM HASHTAGS:" (5 max) then "TIKTOK HASHTAGS:" (3–5) as two separate blocks. Both derived from the clip\'s actual topic. Include # symbols.';
+
+  const sys = `You write high-converting short-form captions for spiritual entrepreneurs and coaches. Structure: powerful hook line (1 sentence, no question mark, no em dash — works as standalone read and works on mute), then body lines, then CTA, then hashtags. ${captionStyleInstruction} ${ctaInstruction} ${hashtagInstruction} No em dashes. Short paragraphs. Spoken not written. Warm but direct.`;
+
+  callAPI(sys, `Platform: ${platform}\nClip idea / talking points:\n${clip}`, 'cap-body', 'cap-out', 'cap-btn', 'Writing your caption...');
+}
+
+// ─── BLOG POST ─────────────────────────────────────
+async function generateBlog() {
+  const tx = gv('blog-tx');
+  if (!tx || tx.length < 100) { alert('Paste your transcript or talking points first.'); return; }
+  const kw = gv('blog-kw') || 'spiritual entrepreneur visibility';
+  const link = gv('blog-link');
+  const sys = `You write SEO-optimised blog posts for spiritual entrepreneurs and online coaches. Output in order: H1 title (include focus keyword naturally), meta description (155 chars max), intro paragraph with hook and clear promise, 4–5 H2 sections with substantive body paragraphs drawn from the content, conclusion CTA paragraph linking to ${link}. Voice: warm, direct, real talk — no fluff, no corporate tone, no em dashes. Include focus keyword naturally 3–5 times total. End with one clear CTA.`;
+  callAPI(sys, `Focus keyword: ${kw}\nInternal link destination: ${link}\n\nCONTENT:\n${tx}`, 'blog-body', 'blog-out', 'blog-btn', 'Writing your blog post...');
+}
+
+// ─── EMAIL BLAST ───────────────────────────────────
+async function generateEmail() {
+  const tx = gv('email-tx');
+  if (!tx || tx.length < 100) { alert('Paste your transcript or talking points first.'); return; }
+  const greet = gv('email-greet') || 'Hey love';
+  const cta = gv('email-cta');
+  const voice = getChips('email-voice') || 'soft life, savage execution';
+  const sys = `You write broadcast emails for online coaches and spiritual entrepreneurs. Output: subject line (curiosity-driven, under 50 chars, no clickbait), preview text (under 40 chars), then the full email body. Voice: ${voice}. Structure: open with a personal hook or story pulled from the training topic, transition into why this matters right now, 2–3 punchy value bullets, one clear CTA: ${cta}. Scannable — short paragraphs of 1–3 lines max. Should feel like a message from a trusted friend, not a newsletter. No em dashes. No corporate tone.`;
+  callAPI(sys, `Greeting: ${greet}\nCTA: ${cta}\n\nCONTENT:\n${tx}`, 'email-body', 'email-out', 'email-btn', 'Writing your email blast...');
+}
+</script>
+</body>
+</html>
